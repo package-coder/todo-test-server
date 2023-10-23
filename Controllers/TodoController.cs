@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,17 @@ namespace todo_test_server.Controllers
         [HttpPost]
         public async Task<ActionResult<Todo>> SaveTodo(Todo todo)
         {
+            var tags = await _context.Tags.ToListAsync();
+
+            var existingTags = tags.Where(tag => todo.Tags.Any(_tag => _tag.Name == tag.Name)).ToList();
+
+            todo.Tags = todo.Tags.Where(tag => !tags.Any(_tag => _tag.Name == tag.Name)).ToList();
+            
+            foreach(var tag in existingTags)
+            {
+                todo.Tags.Add(tag);
+            }
+
             _context.Todos.Add(todo);
             await _context.SaveChangesAsync();
 
