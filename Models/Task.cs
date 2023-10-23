@@ -12,6 +12,8 @@ namespace todo_test_server.Models
         [Column(TypeName="nvarchar(50)")]
         public string Name { get; set; }
 
+        public string Color { get; set; }
+
         public bool IsCompleted { get; set; } = false;
 
         public bool IsArchived { get; set; } = false;
